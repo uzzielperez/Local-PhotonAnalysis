@@ -1,4 +1,5 @@
 #define TriPhotonClass_cxx
+#include "CMS_lumi.C"
 #include "TriPhotonClass.h"
 #include <TH2.h>
 #include <TStyle.h>
@@ -40,11 +41,24 @@ void TriPhotonClass::Loop()
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
 
+  //====
+  //CMS
+  //===
+    //gROOT->LoadMacro("CMS_lumi.C");
+    writeExtraText = true;       // if extra text
+    //extraText  = "Preliminary";  // default extra text is "Preliminary"
+    //extraText = "work in progress";
+    //lumi_8TeV  = "19.1 fb^{-1}"; // default is "19.7 fb^{-1}"
+    //lumi_7TeV  = "4.9 fb^{-1}";  // default is "5.1 fb^{-1}"
+    //lumi_sqrtS = "13 TeV";       // used with iPeriod = 0, e.g. for simulation-only plots (default is an empty string)
+
+    //int iPeriod = 7;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV, 0=free form (uses lumi_sqrtS)
+
 //==========
 //HISTOGRAMS
 //==========
  
-   TH1F *photon1_pt = new TH1F("Photon1_pt", "Photon1_pt", 100, -1.1, 1.1);  
+   TH1F *photon1_pt = new TH1F("Photon1_pt", "Photon1_pt", 100, 0, 600);  
    TH1F *photon1_eta = new TH1F("Photon1_eta", "Photon1_eta", 100, -1.1, 1.1);
    TH1F *photon1_phi = new TH1F("Photon1_phi", "Photon1_phi",100, -1.05,1.05);
    TH1F *photon1_scEta = new TH1F("Photon1_scEta", "Photon1_scEta",100, -1.05,1.05); 
@@ -68,11 +82,11 @@ void TriPhotonClass::Loop()
       //FILL HISTOGRAMS
       //===============
       
-      photon_1pt-> Fill(Photon1_pt);
-      photon_1eta->Fill(Photon1_eta);
-      photon_1pho->Fill(Photon1_pho);
-      photon_1scEta->Fill(Photon1_scEta);
-      photon_1scPhi->Fill(Photon1_scPhi);
+      photon1_pt-> Fill(Photon1_pt);
+      photon1_eta->Fill(Photon1_eta);
+      photon1_phi->Fill(Photon1_phi);
+      photon1_scEta->Fill(Photon1_scEta);
+      photon1_scPhi->Fill(Photon1_scPhi);
 
    }//end of event loop 
       
@@ -87,13 +101,24 @@ void TriPhotonClass::Loop()
       //CANVAS SET-UP
       //=============
 
+      TCanvas *p1pt = new TCanvas("Photon1_pt", "", 800, 600);
+      CMS_lumi(p1pt, 7, 11);
+      photon1_pt->SetLineColor(kOrange+10);
+      photon1_pt->Draw();
+      p1pt->SetLeftMargin(0.15);
+      p1pt->SetBottomMargin(0.15);
+      photon1_pt->SetFillColor(kOrange-3);
+      //photon1_pt->GetYaxis()->SetTitle("Events");
+      photon1_pt->GetXaxis()->SetTitle("Photon1_pt");
+
 ////////SAVE OUTPUT 
 ////***** Save histograms to root file 
-////TFile *f = new TFile("Exodiphbkg.root", "RECREATE");
+    TFile *f = new TFile("HoverETriphoton.root", "RECREATE");
+    photon1_pt->Write();
 ////***** Save as pdf/.C/.png 
-////
+    p1pt->SaveAs("Photon1pt.pdf");
 ////***** Change directory and close directory
-////f->cd();
-////f->Close();
+    f->cd();
+    f->Close();
 
 }
