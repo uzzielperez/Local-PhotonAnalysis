@@ -43,8 +43,15 @@ void TriPhotonClass::Loop()
 //==========
 //HISTOGRAMS
 //==========
-
+ 
+   TH1F *photon1_pt = new TH1F("Photon1_pt", "Photon1_pt", 100, -1.1, 1.1);  
+   TH1F *photon1_eta = new TH1F("Photon1_eta", "Photon1_eta", 100, -1.1, 1.1);
+   TH1F *photon1_phi = new TH1F("Photon1_phi", "Photon1_phi",100, -1.05,1.05);
+   TH1F *photon1_scEta = new TH1F("Photon1_scEta", "Photon1_scEta",100, -1.05,1.05); 
+   TH1F *photon1_scPhi = new TH1F("Photon1_scPhi", "Photon1_scPhi", 100, -1.1, 1.1); 
+ 
   //Counters
+  int N_total = 0;
 
   if (fChain == 0) return;
 
@@ -56,19 +63,26 @@ void TriPhotonClass::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
-      
-
-
+      N_total++;
       //===============
       //FILL HISTOGRAMS
       //===============
+      
+      photon_1pt-> Fill(Photon1_pt);
+      photon_1eta->Fill(Photon1_eta);
+      photon_1pho->Fill(Photon1_pho);
+      photon_1scEta->Fill(Photon1_scEta);
+      photon_1scPhi->Fill(Photon1_scPhi);
 
    }//end of event loop 
       
+    cout << endl;
+    cout << "Total Photons : " << N_total << endl;
+
       //============
       //EVENTS COUNT
       //============
-
+      
       //=============
       //CANVAS SET-UP
       //=============
